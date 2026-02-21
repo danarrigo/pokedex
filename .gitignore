@@ -1,1 +1,8 @@
 repl.log
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+
