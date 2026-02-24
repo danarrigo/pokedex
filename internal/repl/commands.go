@@ -28,16 +28,21 @@ func getCliCommands() map[string]cliCommand {
 			description: "Displays the previous 20 locations",
 			callback:    commandMapb,
 		},
+		"explore":{
+			name:		"explore",
+			description:"Displays list of pokemon in a certain area",
+			callback:	commandExplore,
+		},
 	}
 }
 
-func commandExit(cfg *Config) error {
+func commandExit(cfg *Config,strs []string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(cfg *Config) error {
+func commandHelp(cfg *Config,strs []string) error {
 	cliCommands := getCliCommands()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -52,11 +57,11 @@ func commandHelp(cfg *Config) error {
 		command := cliCommands[k]
 		fmt.Printf("\n%s: %s", command.name, command.description)
 	}
-	fmt.Println("\n")
+	fmt.Println()
 	return nil
 }
 
-func commandMap(cfg *Config) error {
+func commandMap(cfg *Config,strs []string) error {
 	response, err := cfg.PokeapiClient.FetchLocations(cfg.Next)
 	if err != nil {
 		return err
@@ -71,7 +76,7 @@ func commandMap(cfg *Config) error {
 	return nil
 }
 
-func commandMapb(cfg *Config) error {
+func commandMapb(cfg *Config,strs[]string) error {
 	if cfg.Previous == nil {
 		fmt.Println("you're on the first page")
 		return nil
@@ -87,6 +92,19 @@ func commandMapb(cfg *Config) error {
 
 	for _, val := range response.Results {
 		fmt.Printf("%s\n", val.Name)
+	}
+	return nil
+}
+
+func commandExplore(cfg *Config,strs[]string)error{
+	resp,err:=cfg.PokeapiClient.FetchSpecificLocationInfo(strs[1])
+	if err!=nil{
+		return err
+	}
+	fmt.Printf("Exploring %s... ",strs[1])
+	fmt.Printf("Found Pokemon: \n")
+	for _, encounter := range resp.PokemonEncounters{
+		fmt.Printf(" - %v\n",encounter.Pokemon.Name)
 	}
 	return nil
 }
