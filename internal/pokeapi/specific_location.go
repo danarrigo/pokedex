@@ -70,7 +70,6 @@ func (c *Client) FetchSpecificLocationInfo(locationName string)(SpecificLocation
 	fullUrl:=baseUrl+locationName+"/"
 
 	if val, ok := c.cache.Get(fullUrl); ok {
-		// Cache hit - unmarshal from cached value
 		if err := json.Unmarshal(val, &data); err != nil {
 			return SpecificLocationData{}, err
 		}

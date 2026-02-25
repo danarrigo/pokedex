@@ -12,6 +12,7 @@ func main() {
 
 	cfg := &repl.Config{
 		PokeapiClient: pokeClient,
+		PokeDex: make(map[string]pokeapi.PokemonInfo),
 	}
 
 	repl.StartRepl(cfg)

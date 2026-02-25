@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"math/rand"
 )
 
 func getCliCommands() map[string]cliCommand {
@@ -32,6 +33,11 @@ func getCliCommands() map[string]cliCommand {
 			name:		"explore",
 			description:"Displays list of pokemon in a certain area",
 			callback:	commandExplore,
+		},
+		"catch":{
+			name:		"catch",
+			description:"Catches a specific pokemon",
+			callback:	commandCatch,
 		},
 	}
 }
@@ -106,5 +112,24 @@ func commandExplore(cfg *Config,strs[]string)error{
 	for _, encounter := range resp.PokemonEncounters{
 		fmt.Printf(" - %v\n",encounter.Pokemon.Name)
 	}
+	return nil
+}
+
+func commandCatch(cfg *Config,strs[]string)error{
+	res,err:=cfg.PokeapiClient.GetPokemonInfo(strs[1])
+	if err!=nil{
+		return err
+	}
+	base_xp:=res.BaseExperience
+	fmt.Printf("Throwing a Pokeball at %s...",res.Name)
+	chance:=rand.Intn(base_xp)
+	threshold := 50
+	if chance < threshold {
+	    fmt.Printf("%s was caught!\n",res.Name)
+	    cfg.PokeDex[res.Name] = res
+	} else {
+	    fmt.Printf("%s escaped!\n",res.Name)
+	}
+	
 	return nil
 }

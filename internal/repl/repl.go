@@ -11,6 +11,7 @@ import (
 
 type Config struct {
 	PokeapiClient pokeapi.Client
+	PokeDex map[string]pokeapi.PokemonInfo
 	Next          *string
 	Previous      *string
 }
