@@ -45,6 +45,11 @@ func getCliCommands() map[string]cliCommand {
 			description:"Inspects a pokemon that has been caught",
 			callback:	commandInspect,
 		},
+		"pokedex":{
+			name:		"pokedex",
+			description:"Shows all the pokemon that has been caught",
+			callback:	commandPokeDex,
+		},
 	}
 }
 
@@ -151,6 +156,18 @@ func commandInspect(cfg *Config,strs[]string)error{
 	fmt.Println("types: ")
 	for _,equals:=range val.Types{
 		fmt.Printf("-%s\n",equals.Type.Name)
+	}
+	return nil
+}
+
+func commandPokeDex(cfg *Config,strs[]string)error{
+	if len(cfg.PokeDex)==0{
+		fmt.Println("You haven't caught anything!")
+		return nil
+	}
+	fmt.Printf("Your Pokedex: \n")
+	for key, _ := range cfg.PokeDex {	
+	    fmt.Printf(" - %v\n",key)
 	}
 	return nil
 }
