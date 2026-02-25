@@ -5,6 +5,7 @@ import (
 	"os"
 	"sort"
 	"math/rand"
+	"errors"
 )
 
 func getCliCommands() map[string]cliCommand {
@@ -38,6 +39,11 @@ func getCliCommands() map[string]cliCommand {
 			name:		"catch",
 			description:"Catches a specific pokemon",
 			callback:	commandCatch,
+		},
+		"inspect":{
+			name:		"inspect",
+			description:"Inspects a pokemon that has been caught",
+			callback:	commandInspect,
 		},
 	}
 }
@@ -131,5 +137,20 @@ func commandCatch(cfg *Config,strs[]string)error{
 	    fmt.Printf("%s escaped!\n",res.Name)
 	}
 	
+	return nil
+}
+
+func commandInspect(cfg *Config,strs[]string)error{
+	val,ok:=cfg.PokeDex[strs[1]]
+	if !ok{
+		return errors.New("Pokemon data not found")
+	}
+	fmt.Printf("name: %s\n",val.Name)
+	fmt.Printf("height: %v\n",val.Height)
+	fmt.Printf("weight: %v\n",val.Weight)
+	fmt.Println("types: ")
+	for _,equals:=range val.Types{
+		fmt.Printf("-%s\n",equals.Type.Name)
+	}
 	return nil
 }
